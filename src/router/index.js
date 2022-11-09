@@ -21,6 +21,10 @@ import tkDetails from '@/views/tkDetails.vue'
 import kjRecord from '@/views/kjRecord.vue'
 import zxbp from '@/views/zxbp.vue'
 import flop from '@/views/flop.vue'
+import gsForm from '@/views/gsForm.vue'
+import gsFormDetails from '@/views/gsFormDetails.vue'
+import message from '@/views/message.vue'
+import lhtjMenu from '@/views/lhtj/index.vue'
 
 Vue.use(VueRouter)
 
@@ -129,6 +133,26 @@ const routes = [
     path: '/flop',
     name: 'flop',
     component: flop
+  },
+  {
+    path: '/gsForm',
+    name: 'gsForm',
+    component: gsForm
+  },
+  {
+    path: '/gsFormDetails',
+    name: 'gsFormDetails',
+    component: gsFormDetails
+  },
+  {
+    path: '/message',
+    name: 'message',
+    component: message
+  },
+  {
+    path: '/lhtjMenu',
+    name: 'lhtjMenu',
+    component: lhtjMenu
   },
 ]
 

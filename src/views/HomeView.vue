@@ -406,7 +406,7 @@ export default {
         {
           icon: require("../assets/img/gscs.png"),
           name: "高手参赛",
-          link: "#",
+          link: "/gsForm",
         },
         {
           icon: require("../assets/img/lhtk.png"),
@@ -436,7 +436,7 @@ export default {
         {
           icon: require("../assets/img/zxtj.png"),
           name: "资讯统计",
-          link: "#",
+          link: "/lhtjMenu",
         },
         {
           icon: require("../assets/img/lyfk.png"),

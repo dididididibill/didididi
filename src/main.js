@@ -9,9 +9,10 @@ import './assets/reset.css'
 import * as echarts from 'echarts';//引入echarts
 import axios from 'axios'
 
+
 Vue.prototype.axios = axios
 Vue.prototype.$echarts = echarts //引入组件
-Vue.use(vant)
+Vue.use(vant) 
 Vue.use(VueRouter)
 Vue.config.productionTip = false
 

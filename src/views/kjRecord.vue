@@ -115,7 +115,7 @@ export default {
   },
   methods: {
     onClick(name, title) {
-      Toast(title);
+      this.$toast(title);
     },
     routerLink() {
       this.$router.push("/masterDetails");
@@ -188,7 +188,7 @@ export default {
           > .top {
             display: flex;
             justify-content: space-between;
-            
+
             margin: 20px 0;
             .left {
               font-size: 30px;
@@ -215,12 +215,18 @@ export default {
                 font-weight: 700;
                 margin-bottom: 20px;
               }
-              .btm{
+              .btm {
                 color: #7c7c7c;
               }
             }
             .box:nth-child(7) {
               display: none;
+            }
+            .box:nth-child(8) {
+              padding: 20px 0;
+              .top {
+                width: 20px;
+              }
             }
           }
         }
