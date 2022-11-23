@@ -4,7 +4,7 @@
       class="navBar"
       title="工具宝箱"
       left-arrow
-      :fixed= true
+      :fixed="true"
       @click-left="onClickLeft"
       @click-right="onClickRight"
     >
@@ -18,7 +18,7 @@
         v-for="(item, index) in btns"
         :style="{ background: chooseIndex == index ? '#FF0000' : '#FFF' }"
         :key="index"
-        @click="clickunit(item.id, index)"
+        @click="clickunit(item.type, index)"
       >
         <div
           class="text"
@@ -28,9 +28,7 @@
         </div>
       </div>
     </div>
-    <div class="tix">
-      2022期，点击条形图投票:(每期21:50清空投票数)
-    </div>
+    <div class="tix">2022期，点击条形图投票:(每期21:50清空投票数)</div>
     <div ref="wrap" class="eee">
       <div id="echartRight" style="width: 100%"></div>
     </div>
@@ -39,67 +37,96 @@
 
 <script>
 import echarts from "echarts";
+import { voteDetails } from "@/api/index";
 export default {
   data() {
     return {
       chooseIndex: 0,
-      echarts: [],
+      echartsData: {
+        cate: [],
+        barData: [],
+      },
       btns: [
         {
           name: "生肖",
-          id: 0,
+          type: "sx",
         },
         {
           name: "特码",
-          id: 1,
+          type: "tm",
         },
         {
           name: "波色",
-          id: 2,
+          type: "bs",
         },
         {
           name: "五行",
-          id: 3,
+          type: "wx",
         },
         {
           name: "头数",
-          id: 4,
+          type: "ts",
         },
         {
           name: "尾数",
-          id: 5,
+          type: "ws",
         },
         {
           name: "大小",
-          id: 6,
+          type: "dx",
         },
         {
           name: "单双",
-          id: 7,
+          type: "dx",
         },
         {
           name: "合数",
-          id: 8,
+          type: "hs",
         },
         {
           name: "五门",
-          id: 9,
+          type: "wm",
         },
       ],
     };
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.barGraph();
-    });
+  // mounted() {
+  //   this.$nextTick(() => {
+  //     this.barGraph();
+  //   });
+  // },
+  created() {
+    this.voteDetails("sx");
   },
   methods: {
+    async voteDetails(type) {
+      this.echartsData = {
+        cate: [],
+        barData: [],
+      };
+      const res = await voteDetails({
+        lottery_type: 1,
+        type,
+      });
+      if (res.code === 1) {
+        this.echartsData.cate = res.data.map((el) => {
+          return el.title;
+        });
+        this.echartsData.barData = res.data.map((el) => {
+          return el.vote;
+        });
+      }
+
+      this.$nextTick(() => {
+        this.barGraph();
+      });
+    },
     clickunit(id, index) {
       if (index == this.chooseIndex) {
         console.log("点击相同频道", id);
       } else {
         this.chooseIndex = index;
-        console.log("切换频道", id);
+        this.voteDetails(id);
       }
     },
     onClickRight() {
@@ -109,63 +136,13 @@ export default {
       this.$router.go(-1);
     },
     barGraph() {
-      var cate = [
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-        "猪",
-      ];
-      //数据值，顺序和Y轴的名字一一对应
-      var barData = [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38,
-        39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49,
-      ];
+      if (myChart) {
+        // myChart.dispose(); // 清空
+        // 或者
+        myChart.removeAttribute("_echarts_instance_"); // 移除容器上的 _echarts_instance
+      }
+      var cate = this.echartsData.cate;
+      var barData = this.echartsData.barData;
       var option = {
         tooltip: {
           trigger: "axis",
@@ -190,14 +167,12 @@ export default {
           axisTick: {
             show: false,
           },
-          //不显示X轴刻度线和数字
           splitLine: { show: false },
           axisLabel: { show: false },
         },
         yAxis: {
           type: "category",
           data: cate,
-          //升序
           inverse: true,
           splitLine: { show: false },
           axisLine: {
@@ -206,12 +181,9 @@ export default {
           axisTick: {
             show: false,
           },
-          //key和图间距
           offset: -11,
-          //动画部分
           animationDuration: 300,
           animationDurationUpdate: 300,
-          //key文字大小
           nameTextStyle: {
             fontSize: 5,
           },
@@ -267,18 +239,23 @@ export default {
         animationEasing: "linear",
         animationEasingUpdate: "linear",
       };
-
-      let myChart = this.$echarts.init(document.getElementById("echartRight"));
+      var myChart = this.$echarts.init(document.getElementById("echartRight"));
+      // myChart.removeAttribute("_echarts_instance_");
       myChart.setOption(option);
-      var autoHeight = option.yAxis.data.length * 30 + 150;
+      var autoHeight = option.yAxis.data.length * 30 + 100;
       myChart.getDom().style.height = autoHeight + "px";
       myChart.getDom().childNodes[0].style.height = autoHeight + "px";
-      myChart.getDom().childNodes[0].childNodes[0].setAttribute("height", autoHeight);
-      myChart.getDom().childNodes[0].childNodes[0].style.height = autoHeight + "px";
+      myChart
+        .getDom()
+        .childNodes[0].childNodes[0].setAttribute("height", autoHeight);
+      myChart.getDom().childNodes[0].childNodes[0].style.height =
+        autoHeight + "px";
       myChart.on("click", function (params) {
-        console.log(params,'click');
+        console.log(params, "click");
       });
-      myChart.resize();
+      this.$nextTick(() => {
+        myChart.resize();
+      });
     },
   },
 };
@@ -317,7 +294,7 @@ export default {
     align-items: center;
 
     .btn {
-      border: 1px solid #E2E2E2; 
+      border: 1px solid #e2e2e2;
       line-height: 60px;
       text-align: center;
       font-size: 28px;
@@ -330,7 +307,7 @@ export default {
       margin-top: 20px;
     }
   }
-  .tix{
+  .tix {
     margin-top: 30px;
     margin-left: 25px;
     font-size: 28px;

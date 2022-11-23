@@ -28,28 +28,14 @@
         >
       </div>
       <div class="contentText">
-        <div class="title" @click="routerLink">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
-        <div class="title">064期鬼谷子解正版挂牌OK</div>
+        <div
+          class="title"
+          @click="routerLink(item.id)"
+          v-for="(item, index) in dataList.list"
+          :key="index"
+        >
+          {{ item.title }}
+        </div>
       </div>
       <van-pagination
         class="page"
@@ -57,6 +43,8 @@
         v-model="currentPage"
         :total-items="24"
         :items-per-page="5"
+        :page-count	= dataList.total
+        @change="zlDataList"
       />
       <div class="linkWrap">
         <router-link class="link" to="#"
@@ -81,15 +69,34 @@
 </template>
 
 <script>
+import { zlDataList } from "@/api/index";
 export default {
   data() {
     return {
+      dataList: [],
       currentPage: 1,
     };
   },
+  created() {
+    this.zlDataList();
+  },
   methods: {
-    routerLink(){
-        this.$router.push('/masterDetails')
+    async zlDataList() {
+      const res = await zlDataList({
+        id: "94",
+        page: this.currentPage,
+      });
+      if (res.code === 1) {
+        this.dataList = res.data;
+      }
+    },
+    routerLink(id) {
+      this.$router.push({
+        path: "/masterDetails",
+        query: {
+          id
+        },
+      });
     },
     onClickRight() {
       this.$router.push("/");
@@ -175,8 +182,8 @@ export default {
     justify-content: center;
     align-items: center;
     background: #000;
-    .top{
-        margin-bottom: 15px;
+    .top {
+      margin-bottom: 15px;
     }
   }
 }

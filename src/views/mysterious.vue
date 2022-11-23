@@ -11,11 +11,22 @@
         10万六合彩用户都说准的谜题,这一期,您猜出了什么玄机?
       </div>
       <div class="content">
-        <div class="title">2022年第242期六合彩</div>
+        <div class="title">{{ data.title }}</div>
         <img src="../assets/img/jinnang.png" />
         <div class="btns">
-          <van-button v-if="!open" class="btn1" size="large" type="info" @click="open = true">打开锦囊</van-button>
-          <div v-else class="text">临危不惧有胆色一意孤行太固执。</div>
+          <van-button
+            v-if="!open"
+            class="btn1"
+            size="large"
+            type="info"
+            @click="open = true"
+            >打开锦囊</van-button
+          >
+          <div v-else class="textWrap">
+            <div class="text" v-for="item in data.content" :key="item">
+              {{ item }}
+            </div>
+          </div>
           <van-button
             class="btn2"
             size="large"
@@ -35,13 +46,25 @@
 </template>
 
 <script>
+import { toolboxSikbag } from "@/api/index";
 export default {
   data() {
     return {
-      open:false
+      open: false,
+      data: {
+        content: [],
+        title: "",
+      },
     };
   },
+  created() {
+    this.toolboxSikbag();
+  },
   methods: {
+    async toolboxSikbag() {
+      const res = await toolboxSikbag();
+      this.data = res.data;
+    },
     routerLink(link) {
       this.$router.push(link);
     },
@@ -88,12 +111,16 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
-        .text{
-          text-indent: 40px;
-          width: 320px;
-          color: red;
+        .textWrap {
           margin-bottom: 50px;
+          .text {
+            text-indent: 40px;
+            width: 370px;
+            color: red;
+            margin-bottom: 10px;
+          }
         }
+
         .btn1 {
           margin-bottom: 50px;
           width: 400px;

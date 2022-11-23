@@ -7,9 +7,13 @@
       </div>
       <img src="../assets/img/logo@2x.png" />
       <div class="rightNav">
-        <div class="left" @click="routerLink('/login')">
+        <div class="left" v-if="!this.userType" @click="routerLink('/login')">
           <van-icon name="user-circle-o" size="18" />
           <div class="text">登录</div>
+        </div>
+        <div class="left grzx" v-else  @click="routerLink('/grzx')">
+          <van-icon name="user-circle-o" size="18" />
+          <div class="text">个人中心</div>
         </div>
         <div class="right">
           <van-icon @click="popup" name="bars" size="18" />
@@ -24,7 +28,16 @@
       /></van-swipe-item>
     </van-swipe>
     <div class="center">
-      <div class="card">
+      <iframe
+        :src="kjTime"
+        width="100%"
+        height="180px"
+        align="left"
+        scrolling="no"
+        name="a_frame"
+      >
+      </iframe>
+      <!-- <div class="card">
         <div class="cardList">
           <div
             class="btn"
@@ -45,11 +58,7 @@
           <div class="center">
             <div class="left" v-for="(item, index) in num" :key="index">
               <div class="box">
-                <!-- <div class="num" :style="{ backgroundImage : item.type == 'red' ? 'url(' + require('../assets/img/red.png') + ')': item.type == 'blue' ? 'url(' + require('../assets/img/blue.png') + ')' :'url(' + require('../assets/img/green.png') + ')' }" >  -->
-                <div
-                  class="num" 
-                  :class="getCss(item.n)"
-                >
+                <div class="num" :class="getCss(item.n)">
                   {{ item.n }}
                 </div>
                 <div class="type">{{ item.class }}</div>
@@ -58,14 +67,14 @@
             <div class="right">
               <div class="fh">+</div>
               <div class="box">
-                <div class="num" >16</div>
+                <div class="num">16</div>
                 <div class="type">龙/金</div>
               </div>
             </div>
           </div>
           <div class="timer">第109期2020/12/18/周六21:34</div>
         </div>
-      </div>
+      </div> -->
       <div class="navWrapper">
         <div
           class="navBox"
@@ -79,40 +88,40 @@
       </div>
       <div class="forecast">
         <div class="title">
-          <div class="yellowText">059期: AA级公开</div>
+          <div class="yellowText">{{ forecastArr.aa_data.title }}</div>
           <div class="ddz">还等啥大胆砸</div>
         </div>
         <div class="forecastContent">
           <div
             class="forecastList"
-            v-for="(item, index) in forecastArr"
+            v-for="(item, index) in forecastArr.aa_data.list"
             :key="index"
           >
-            <div class="left">{{ item.num }}期: {{ item.title }} :</div>
-            <div
-              class="right"
-              v-for="(item1, index1) in item.content"
-              :key="index1"
-            >
-              {{ item1 }}
+            <div class="left">{{ item.title }}:</div>
+            <div class="right">
+              {{ item.content }}
             </div>
           </div>
         </div>
       </div>
       <div class="galleryWrap">
-        <div class="gallery" v-for="(item, index) in galleryList" :key="index">
+        <div
+          class="gallery"
+          v-for="(item, index) in forecastArr.zl_data"
+          :key="index"
+        >
           <div class="title">
             <img src="../assets/img/imgSy.png" />
-            <div class="text">{{ item.galleryName }}</div>
+            <div class="text">{{ item.title }}</div>
           </div>
           <div class="galleryListWrap">
             <div
               class="galleryList"
-              v-for="(item1, index1) in item.galleryNav"
+              v-for="(item1, index1) in item.list"
               :key="index1"
               @click="routerLink(item1.link)"
             >
-              {{ item1.name }}
+              {{ item1.title }}
             </div>
           </div>
         </div>
@@ -158,113 +167,20 @@
   </div>
 </template>
 <script>
+import { indexBanner, indexDataList } from "@/api/index";
+import { mapGetters } from "vuex";
+import { getSessStore } from "@/utils/mUtils";
 export default {
   data() {
     return {
+      userType:false,
       show: false,
       chooseIndex: 0,
-      galleryList: [
-        {
-          galleryName: "香港图库",
-          galleryNav: [
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-            {
-              name: "看图解码",
-              link: "#",
-            },
-          ],
-        },
+      kjTime: "",
+      images: [
+        require("../assets/img/u12.png"),
+        require("../assets/img/u14.png"),
+        require("../assets/img/u16.png"),
       ],
       unit: [
         {
@@ -288,68 +204,10 @@ export default {
           id: 3,
         },
       ],
-      forecastArr: [
-        {
-          num: "059",
-          title: "精选九肖",
-          content: ["鸡", "猴", "蛇", "龙", "鼠", "狗", "牛", "猪", "马"],
-        },
-        {
-          num: "059",
-          title: "精选七肖",
-          content: ["鸡", "猴", "蛇", "龙", "鼠", "狗", "牛"],
-        },
-        {
-          num: "059",
-          title: "精选五肖",
-          content: ["鸡", "猴", "蛇", "龙", "鼠"],
-        },
-        {
-          num: "059",
-          title: "精选三肖",
-          content: ["鸡", "猴", "蛇"],
-        },
-        {
-          num: "059",
-          title: "精选一肖",
-          content: ["鸡"],
-        },
-        {
-          num: "059",
-          title: "特选尾数",
-          content: ["1-5-6-7-9"],
-        },
-        {
-          num: "059",
-          title: "精选两波",
-          content: ["红波", "蓝波"],
-        },
-        {
-          num: "059",
-          title: "精选一尾",
-          content: ["777"],
-        },
-        {
-          num: "059",
-          title: "精选一肖",
-          content: ["龙 龙 龙"],
-        },
-        {
-          num: "059",
-          title: "精选十码",
-          content: ["18", "42", "31", "43", "22", "46", "11", "23", "03", "17"],
-        },
-        {
-          num: "059",
-          title: "精选五码",
-          content: ["18", "42", "31", "43", "22"],
-        },
-        {
-          num: "059",
-          title: "精选三码",
-          content: ["18", "42", "31"],
-        },
-      ],
+      forecastArr: {
+        aa_data: { title: "" },
+        zl_data: { title: "" },
+      },
       num: [
         {
           n: "01",
@@ -444,14 +302,10 @@ export default {
           link: "#",
         },
       ],
-      images: [
-        require("../assets/img/u12.png"),
-        require("../assets/img/u14.png"),
-        require("../assets/img/u16.png"),
-      ],
+
       tabbars: [
         {
-          id: "0",
+          id: "2",
           title: "澳彩",
           normal: require("../assets/img/ac.png"),
           active: require("../assets/img/acxz.png"),
@@ -465,14 +319,14 @@ export default {
           color: "#FF0000",
         },
         {
-          id: "2",
+          id: "3",
           title: "台彩",
           normal: require("../assets/img/tc.png"),
           active: require("../assets/img/tcxz.png"),
           color: "#0755c1",
         },
         {
-          id: "3",
+          id: "4",
           title: "新彩",
           normal: require("../assets/img/xc.png"),
           active: require("../assets/img/xcxz.png"),
@@ -482,13 +336,36 @@ export default {
     };
   },
   computed: {
-    getCss () {
+    getCss() {
       return (index) => {
-        return 'css' + Number(index)
+        return "css" + Number(index);
       };
     },
+    ...mapGetters({
+      lotterytype: "getLotterytype", 
+    }),
+  },
+  created() {
+    if(getSessStore('authInfo')){
+      this.userType = true
+    }
+    this.indexBanner();
+    this.indexDataList();
   },
   methods: {
+    async indexBanner() {
+      const res = await indexBanner();
+      console.log(res);
+      this.kjTime = res.data.open_url;
+    },
+    async indexDataList() {
+      const res = await indexDataList();
+      if (res.code == 1) {
+        this.forecastArr = res.data;
+      } else {
+        this.$toast(res.msg);
+      }
+    },
     showPopup() {
       this.show = true;
     },
@@ -510,6 +387,8 @@ export default {
       } else {
         this.chooseIndex = index;
         console.log("切换频道", id);
+        this.$store.dispatch("setLotterytype", id);
+        console.log(this.lotterytype, "vuex");
       }
     },
   },
@@ -521,6 +400,7 @@ export default {
   position: relative;
   padding-bottom: 25px;
   width: 100%;
+  margin-bottom: 100px;
   background: #fff;
   .popWrapper {
     width: 100%;
@@ -574,14 +454,17 @@ export default {
       width: 150px;
       margin: auto 20px;
       display: flex;
-      .left {
+      justify-content: space-around;
+      .left { 
+        // margin-right: 30px;
         .text {
           margin-top: 5px;
         }
       }
-
+      .grzx{ 
+        margin-right: 5px;
+      }
       .right {
-        margin-left: 30px;
         .text {
           margin-top: 5px;
         }

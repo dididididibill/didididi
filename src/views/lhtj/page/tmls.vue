@@ -34,12 +34,33 @@
 
 <script>
 import * as echarts from "echarts";
+import { zxcountSpecialcode } from "@/api/index";
 export default {
   data() {
     return {
       showPopover: false,
       actions: [],
       actQs: "",
+      chartData: {
+        hot:{ 
+          title:'',
+          xAxis:{
+            data:[]
+          },
+          series:{
+            data:[]
+          }
+        },
+        cold:{ 
+          title:'',
+          xAxis:{
+            data:[]
+          },
+          series:{
+            data:[]
+          }
+        }, 
+      },
     };
   },
   created() {
@@ -50,11 +71,19 @@ export default {
     ];
     this.actQs = this.actions[0].text;
 
-    this.$nextTick(() => {
-      this.createdEchart();
-    });
+    // this.$nextTick(() => {
+    //   this.createdEchart();
+    // });
+    this.zxcountSpecialcode();
   },
   methods: {
+    async zxcountSpecialcode() {
+      const res = await zxcountSpecialcode({ lottery_type: "1", limit: "100" });
+      this.chartData = res.data;
+      this.$nextTick(() => {
+      this.createdEchart();
+    });
+    },
     createdEchart() {
       let chartDom = document.getElementById("hot");
       let chartDom1 = document.getElementById("cool");
@@ -62,20 +91,20 @@ export default {
       let myChart1 = echarts.init(chartDom1);
       let option = {
         title: {
-          text: "正码历史热图(所选期数范围内国内出现的次数)",
+          text: `${this.chartData.hot.title}(所选期数范围内国内出现的次数)`,
           left: "left",
           textStyle: { fontSize: 14, color: "#7c7c7c", fontWeight: 500 },
         },
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: this.chartData.hot.xAxis.data,
         },
         yAxis: {
           type: "value",
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: this.chartData.hot.series[0].data,
             type: "line",
             itemStyle: {
               color: "red",
@@ -97,20 +126,20 @@ export default {
       };
       let option1 = {
         title: {
-          text: "正码历史冷图(所选期数范围内国内出现的次数)",
+          text: `${this.chartData.cold.title}(所选期数范围内国内出现的次数)`,
           left: "left",
           textStyle: { fontSize: 14, color: "#7c7c7c", fontWeight: 500 },
         },
         xAxis: {
           type: "category",
-          data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          data: this.chartData.cold.xAxis.data,
         },
         yAxis: {
           type: "value",
         },
         series: [
           {
-            data: [150, 230, 224, 218, 135, 147, 260],
+            data: this.chartData.cold.series[0].data,
             type: "line",
             itemStyle: {
               color: "blue",

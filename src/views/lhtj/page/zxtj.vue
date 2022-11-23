@@ -28,12 +28,12 @@
       <div class="bg"></div>
       <div class="listWrapper">
         <div
-          v-for="(item, index) in numlist"
+          v-for="(item, index) in dataList"
           :key="index"
           @click="openDlg(item)"
           class="colorList"
         >
-          <div class="top">{{ item.text }}</div>
+          <div class="top">{{ item.title }}</div>
           <div class="btm">
             <div
               class="numBox"
@@ -78,7 +78,9 @@
           <div class="btm">
             <div
               class="numBox"
-              :class="item1 == '红波' ? 'red':item1 == '绿波' ? 'green' : 'blue'"
+              :class="
+                item1 == '红波' ? 'red' : item1 == '绿波' ? 'green' : 'blue'
+              "
               v-for="(item1, index1) in item.number"
               :key="index1"
             >
@@ -90,13 +92,16 @@
       <div class="bg"></div>
     </div>
     <van-dialog v-model="show" confirmButtonColor="#07c160">
-      <div style="padding-top: 20px; color: red">{{ showData.text }}</div>
-      <div style="padding: 20px">{{ showData.number.join("、") }}</div>
+      <div style="padding-top: 20px; color: red">{{ showData.title }}</div>
+      <div style="padding: 20px">
+        【{{ showData.number[0] }}】统计的次数：{{ showData.count[0] }}次
+      </div>
     </van-dialog>
   </div>
 </template>
 
 <script>
+import { zxcountLiuhe } from "@/api/index";
 export default {
   data() {
     return {
@@ -108,6 +113,33 @@ export default {
       showData: {
         text: "",
         number: [],
+        count: [],
+      },
+      dataList: {
+        specialHotNumberList: {
+          title: "特码出现期数最多的号码",
+          number: [],
+          count: [],
+        }, //	特码出现期数最多的号码
+        normalColdNumberList: {
+          title: "正码当前遗漏期数最多的号码",
+          number: [],
+          count: [],
+        }, //	正码当前遗漏期数最多的号码
+        normalColdAnimalList: {}, //	正码当前遗漏期数最多的生肖
+        normalColdColorList: {}, //	正码当前遗漏期数最多的波色
+        normalColdTailList: {}, //	无
+        normalHotAnimalList: {}, //	正码出现期数最多的生肖
+        normalHotColorList: {}, //	正码出现期数最多的波色
+        normalHotNumberList: {}, //	正码出现期数最多的号码
+        normalHotTailList: {}, //	无
+        specialColdAnimalList: {}, //	特码当前遗漏期数最多的生肖
+        specialColdColorList: {}, //	特码当前遗漏期数最多的波色
+        specialColdNumberList: {}, //	特码当前遗漏期数最多的号码
+        specialColdTailList: {}, //	特码当前遗漏期数最多的尾数
+        specialHotAnimalList: {}, //	特码出现期数最多的生肖
+        specialHotColorList: {}, //	特码出现期数最多的波色
+        specialHotTailList: {}, //	特码出现期数最多的尾数
       },
       numlist: [
         { text: "特码出现期数最多的号码", number: ["03", "15", "27", "39"] },
@@ -169,8 +201,20 @@ export default {
       { text: "101", id: "101" },
     ];
     this.actQs = this.actions[0].text;
+    this.zxcountLiuhe();
   },
   methods: {
+    async zxcountLiuhe() {
+      const res = await zxcountLiuhe({ lottery_type: "1", limit: "100" });
+     this.dataList.specialHotNumberList.number =
+        res.data.specialHotNumberList.map((el) => {
+          return el.number;
+        });
+      this.dataList.specialHotNumberList.count =
+        res.data.specialHotNumberList.map((el) => {
+          return el.count;
+        });
+    },
     onSelect(action) {
       this.actQs = action.text;
       console.log(action.id);
@@ -282,15 +326,15 @@ export default {
           width: 30px;
           height: 50px;
         }
-        .green{
+        .green {
           color: #07c160;
           width: 60px;
         }
-        .red{
+        .red {
           color: red;
           width: 60px;
         }
-        .blue{
+        .blue {
           color: blue;
           width: 60px;
         }

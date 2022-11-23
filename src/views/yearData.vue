@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { time } from "echarts";
+import { ListAspx } from "@/api/index";
 export default {
   data() {
     return {
@@ -131,8 +131,7 @@ export default {
           name: "66宝典-www.66bd.com",
           time: "2022-9-28 21:47:30",
           id: "001",
-        }, 
- 
+        },
       ],
       currentPage: 1,
       yearBtn: [],
@@ -142,11 +141,16 @@ export default {
 
   created() {
     this.getYear();
+    this.ListAspx()
   },
   methods: {
+    async ListAspx() {
+      const res = await ListAspx({ id: "263", page: this.currentPage });
+      console.log(res)
+    },
     routerLink(id) {
       // this.$router.push("/masterDetails");
-      this.$toast('id' + id )
+      this.$toast("id" + id);
     },
     onClickRight() {
       this.$router.push("/");
@@ -248,11 +252,11 @@ export default {
           line-height: 60px;
           display: flex;
           justify-content: left;
-          .left{
+          .left {
             flex: 1;
             white-space: nowrap;
           }
-          .right { 
+          .right {
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;

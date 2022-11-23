@@ -11,15 +11,15 @@
     <div class="sxListWrap">
       <div class="sxList" v-for="(item, index) in sxListData" :key="index">
         <div class="top">
-          <div class="name">{{ item.name }}</div>
-          <img :src="item.icon" />
-          <div class="text">【冲 {{ item.conflict }}】</div>
+          <div class="name">{{ item.title }}</div>
+          <img :src="getStatusImg(item.abbr)" />
+          <div class="text">{{ item.describe }}</div>
         </div>
         <div class="btm">
           <div
             class="num"
             :style="{ background: getStatusColor(item1) }"
-            v-for="(item1, index1) in item.num"
+            v-for="(item1, index1) in item.zodiac_number"
             :key="index1"
           >
             {{ item1 }}
@@ -34,12 +34,12 @@
         v-for="(item, index) in wxList"
         :key="index + 'item'"
       >
-        <div class="wxTitle">{{ item.name }}</div>
+        <div class="wxTitle">{{ item.title }}</div>
         <div class="wxNub">
           <div
             class="nub"
             :style="{ background: getStatusColor(item1) }"
-            v-for="(item1, index1) in item.nub"
+            v-for="(item1, index1) in item.zodiac_number"
             :key="index1"
           >
             {{ item1 }}
@@ -54,14 +54,14 @@
         v-for="(item, index) in colorList"
         :key="index + 'item'"
       >
-        <div class="wxTitle" :style="{ color: getStatusColor(item.nub[1]) }">
-          {{ item.name }}
+        <div class="wxTitle" :style="{ color: getStatusColor(item.zodiac_number[1]) }">
+          {{ item.title }}
         </div>
         <div class="wxNub">
           <div
             class="nub"
             :style="{ background: getStatusColor(item1) }"
-            v-for="(item1, index1) in item.nub"
+            v-for="(item1, index1) in item.zodiac_number"
             :key="index1"
           >
             {{ item1 }}
@@ -73,15 +73,15 @@
     <div class="wxWrap">
       <div
         class="wxContent"
-        v-for="(item, index) in sxList"
+        v-for="(item, index) in hsList"
         :key="index + 'item'"
       >
-        <div class="wxTitle" style="color: red">{{ item.name }}</div>
+        <div class="wxTitle" style="color: red">{{ item.title }}</div>
         <div class="wxNub">
           <div
             class="nub"
             :style="{ background: getStatusColor(item1) }"
-            v-for="(item1, index1) in item.nub"
+            v-for="(item1, index1) in item.zodiac_number"
             :key="index1"
           >
             {{ item1 }}
@@ -123,33 +123,12 @@
 </template>
 
 <script>
-import { number } from "echarts";
+import { zodiacAttr } from "@/api/index";
 export default {
   data() {
     return {
-      wxList: {
-        x1: {
-          name: "金",
-          nub: ["01", "08", "09", "22", "23", "30", "31", "38", "39"],
-        },
-        x2: {
-          name: "木",
-          nub: ["04", "05", "12", "13", "20", "21", "34", "35", "42", "43"],
-        },
-        x3: {
-          name: "水",
-          nub: ["10", "11", "18", "19", "26", "27", "40", "41", "48", "49"],
-        },
-        x4: {
-          name: "火",
-          nub: ["06", "07", "14", "15", "28", "29", "36", "37", "44", "45"],
-        },
-        x5: {
-          name: "土",
-          nub: ["02", "03", "16", "17", "24", "25", "32", "33", "46", "47"],
-        },
-      },
-      sxList: {
+      wxList: {},
+      hsList: {
         x1: {
           name: "合数单",
           nub: [
@@ -300,80 +279,7 @@ export default {
           nub: ["05", "11", "17", "21", "27", "33", "39", "43", "49"],
         },
       },
-      sxListData: [
-        {
-          icon: require("../assets/img/hu.png"),
-          name: "虎",
-          conflict: "猴",
-          num: ["01", "13", "25", "37", "49"],
-        },
-        {
-          icon: require("../assets/img/tu.png"),
-          name: "兔",
-          conflict: "鸡",
-          num: ["12", "24", "36", "48"],
-        },
-        {
-          icon: require("../assets/img/long.png"),
-          name: "龙",
-          conflict: "狗",
-          num: ["11", "23", "35", "47"],
-        },
-        {
-          icon: require("../assets/img/she.png"),
-          name: "蛇",
-          conflict: "猪",
-          num: ["10", "22", "34", "46"],
-        },
-        {
-          icon: require("../assets/img/ma.png"),
-          name: "马",
-          conflict: "鼠",
-          num: ["09", "21", "33", "45"],
-        },
-        {
-          icon: require("../assets/img/yang.png"),
-          name: "羊",
-          conflict: "牛",
-          num: ["08", "20", "32", "44"],
-        },
-        {
-          icon: require("../assets/img/hou.png"),
-          name: "猴",
-          conflict: "虎",
-          num: ["07", "19", "31", "43"],
-        },
-        {
-          icon: require("../assets/img/ji.png"),
-          name: "鸡",
-          conflict: "兔",
-          num: ["06", "18", "30", "42"],
-        },
-        {
-          icon: require("../assets/img/gou.png"),
-          name: "狗",
-          conflict: "龙",
-          num: ["05", "17", "29", "41"],
-        },
-        {
-          icon: require("../assets/img/zhu.png"),
-          name: "猪",
-          conflict: "蛇",
-          num: ["04", "16", "28", "40"],
-        },
-        {
-          icon: require("../assets/img/shu.png"),
-          name: "鼠",
-          conflict: "马",
-          num: ["03", "15", "27", "39"],
-        },
-        {
-          icon: require("../assets/img/niu.png"),
-          name: "牛",
-          conflict: "羊",
-          num: ["02", "14", "26", "38"],
-        },
-      ],
+      sxListData: [],
       sxTypeData: {
         a1: {
           aa1: {
@@ -2763,8 +2669,31 @@ export default {
         return list[Number(index) - 1];
       };
     },
+    getStatusImg() {
+      return (item) => {
+        if (item == "lo") {
+          return require("@/assets/img/long.png");
+        } else {
+          return require("@/assets/img/" + item + ".png");
+        }
+      };
+    },
+  },
+  created() {
+    this.zodiacAttr();
   },
   methods: {
+    async zodiacAttr() {
+      const res = await zodiacAttr();
+      if (res.code === 1) {
+        this.sxListData = res.data.sxhm.list;
+        this.wxList = res.data.wx.list;
+        this.colorList = res.data.bs.list
+        this.hsList = res.data.hsds.list 
+      } else {
+        this.$toast(res.msg);
+      }
+    },
     returnTop() {
       this.$nextTick(() => {
         window.scrollTo({

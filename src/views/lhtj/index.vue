@@ -1,11 +1,15 @@
 <template>
   <div class="wrap">
+    <!-- 资讯统计 -->
     <ZxtjPage v-if="activePage == 0"/>
     <!-- 属性参照 -->
     <SxczPage v-if="activePage == 1" />
     <!-- 特码历史 -->
     <TmlsPage v-if="activePage == 2" />
-    <SxbtPage v-if="activePage == 3" />
+    <!-- 饼图 -->
+    <!-- <SxbtPage v-if="activePage == 3" /> -->
+    <!-- 尾数大小 -->
+    <WsdxPage v-if="activePage == 3" />
     <van-tabbar
       v-model="active"
       active-color="#07c160"
@@ -28,12 +32,14 @@ import SxczPage from "./page/sxcz";
 import ZxtjPage from "./page/zxtj";
 import TmlsPage from "./page/tmls";
 import SxbtPage from "./page/sxbt";
+import WsdxPage from "./page/wsdx";
 export default {
   components: {
     SxczPage,
     ZxtjPage,
     TmlsPage,
     SxbtPage,
+    WsdxPage,
   },
   data() {
     return {

@@ -8,7 +8,7 @@ import 'amfe-flexible'
 import './assets/reset.css'
 import * as echarts from 'echarts';//引入echarts
 import axios from 'axios'
-
+import store from './store';
 
 Vue.prototype.axios = axios
 Vue.prototype.$echarts = echarts //引入组件
@@ -18,5 +18,6 @@ Vue.config.productionTip = false
 
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')
