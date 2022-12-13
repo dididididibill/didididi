@@ -81,16 +81,18 @@
             <img src="../assets/img/pl.png" />
             <div class="num">{{ listData.tzData.pl }}</div>
           </div>
-          <div class="box">
-            <img src="../assets/img/dz.png" />
+          <div class="box" @click="changeDzType">
+            <img v-if="!this.listData.tzData.type.dz" src="../assets/img/dz.png" />
+            <img v-else src="../assets/img/dzAct.png" />
             <div class="num">{{ listData.tzData.dz }}</div>
           </div>
-          <div class="box">
-            <img src="../assets/img/gz.png" />
+          <div class="box" @click="changeGzType">
+            <img v-if="!this.listData.tzData.type.gz" src="../assets/img/gz.png" />
+            <img v-else src="../assets/img/gzAct.png" />
             <div class="num">{{ listData.tzData.gz }}</div>
           </div>
           <div class="box">
-            <img src="../assets/img/fx.png" />
+            <img src="../assets/img/fx.png" /> 
             <div class="num">{{ listData.tzData.fx }}</div>
           </div>
           <div class="box">
@@ -123,8 +125,9 @@
             <div class="gdpl" v-if="item.plhf.length > 0">更多评论</div>
           </div>
           <div class="dzBtn">
-            <div class="btn1">
-              <img src="../assets/img/dz.png" />
+            <div class="btn1" @click="changeZpldzType(item.id,index)">
+              <img v-if="!item.dzType" src="../assets/img/dz.png" />
+              <img v-else src="../assets/img/dzAct.png" />
               <div class="num">{{ item.dzNum }}</div>
             </div>
           </div>
@@ -200,6 +203,10 @@ export default {
           liul: "700",
           type: "2",
           id: "001",
+          type:{
+            dz:false,
+            gz:false,
+          },
           plList: [
             {
               name: "徐国",
@@ -207,7 +214,58 @@ export default {
               img: require("../assets/img/pltx.png"),
               content: "241期澳彩特肖(玉林站)参赛帖",
               dzNum: "555",
+              dzType:false,
               id: "0001",
+              plhf: [],
+            },
+            {
+              name: "徐国",
+              time: "2022-10-18 23:22:31",
+              img: require("../assets/img/pltx.png"),
+              content: "241期澳彩特肖(玉林站)参赛帖",
+              dzNum: "555",
+              dzType:false,
+              id: "0002",
+              plhf: [],
+            },
+            {
+              name: "徐国",
+              time: "2022-10-18 23:22:31",
+              img: require("../assets/img/pltx.png"),
+              content: "241期澳彩特肖(玉林站)参赛帖",
+              dzNum: "555",
+              dzType:false,
+              id: "0003",
+              plhf: [],
+            },
+            {
+              name: "徐国",
+              time: "2022-10-18 23:22:31",
+              img: require("../assets/img/pltx.png"),
+              content: "241期澳彩特肖(玉林站)参赛帖",
+              dzNum: "555",
+              dzType:false,
+              id: "0004",
+              plhf: [],
+            },
+            {
+              name: "徐国",
+              time: "2022-10-18 23:22:31",
+              img: require("../assets/img/pltx.png"),
+              content: "241期澳彩特肖(玉林站)参赛帖",
+              dzNum: "555",
+              dzType:false,
+              id: "0005",
+              plhf: [],
+            },
+            {
+              name: "徐国",
+              time: "2022-10-18 23:22:31",
+              img: require("../assets/img/pltx.png"),
+              content: "241期澳彩特肖(玉林站)参赛帖",
+              dzNum: "555",
+              dzType:false,
+              id: "0006",
               plhf: [],
             },
           ],
@@ -224,6 +282,36 @@ export default {
   },
   created() {},
   methods: {
+    changeZpldzType(id,index){
+      if(this.listData.tzData.plList[index].dzType){ 
+        this.listData.tzData.plList[index].dzNum--
+        this.$toast('取消点赞') 
+      }else{ 
+        this.listData.tzData.plList[index].dzNum++
+        this.$toast('子评论点赞') 
+      } 
+        this.listData.tzData.plList[index].dzType = !this.listData.tzData.plList[index].dzType
+    },
+    changeDzType(){
+      if(this.listData.tzData.type.dz){
+        this.listData.tzData.dz--
+        this.$toast('取消点赞')
+      }else{
+        this.listData.tzData.dz++
+        this.$toast('点赞')
+      }
+        this.listData.tzData.type.dz = !this.listData.tzData.type.dz
+    },
+    changeGzType(){
+      if(this.listData.tzData.type.gz){
+        this.listData.tzData.gz--
+        this.$toast('取消关注')
+      }else{
+        this.listData.tzData.gz++
+        this.$toast('关注')
+      }
+        this.listData.tzData.type.gz = !this.listData.tzData.type.gz
+    },
     submit() {
       this.$toast(this.value);
     },

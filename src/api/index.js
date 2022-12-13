@@ -9,6 +9,14 @@ export function login(params, url) {
   //登录
   return fetchPost(url || baseUrl, "member/login", params);
 }
+export function userInfo(params, url) {
+  //获取用户信息
+  return fetchPost(url || baseUrl, "member/user_info", params);
+}
+export function editInfo(params, url) {
+  //修改用户信息
+  return fetchPost(url || baseUrl, "member/edit_info", params);
+}
 export function register(params, url) {
   //注册
   return fetchPost(url || baseUrl, "member/register", params);
@@ -48,6 +56,18 @@ export function zodiacAttr(params, url) {
 export function toolboxSikbag(params, url) {
   // 玄机锦囊
   return fetchGet(url || baseUrl, "toolbox/sinkBag", params);
+}
+export function toolboxListSinkBag(params, url) {
+  // 玄机锦囊列表
+  return fetchGet(url || baseUrl, "toolbox/listSinkBag", params);
+}
+export function toolboxLoversNumber(params, url) {
+  // 恋人特码
+  return fetchGet(url || baseUrl, "toolbox/loversNumber", params);
+}
+export function toolboxAnimalCard(params, url) {
+  // 生肖卡牌
+  return fetchGet(url || baseUrl, "toolbox/animalCard", params);
 }
 export function zxcountLiuhe(params, url) {
   // 资讯统计-六合统计

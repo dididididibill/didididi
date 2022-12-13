@@ -12,7 +12,7 @@ export function reqInterceptors(config) {
   });
   const AuthInfo = getSessStore('authInfo')
   if (AuthInfo && AuthInfo.token) {
-    config.headers['token'] = 'bearer ' + AuthInfo.token
+    config.headers['token'] = AuthInfo.token
   } 
   return config
 }

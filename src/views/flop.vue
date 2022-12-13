@@ -1,20 +1,31 @@
 <template>
   <div class="overall">
+    <van-nav-bar
+      class="navBar"
+      title="生肖卡牌"
+      left-arrow
+      @click-left="onClickLeft"
+    />
     <div>
       <p class="title">
         每期开奖前通过该工具可以快捷查看三个隐藏在卡牌的生肖来试试你的财运！
       </p>
-      <div class="box">
+      <div v-if="!type" class="box">
         <div
           v-for="(i, index) in list"
           :key="index"
           class="card-box"
           @click="open(i, index)"
         >
-          <div class="crad" :class="{ active : i.type }">
-            <img class='zm' src="../assets/img/flop.png" />
+          <div class="crad" :class="{ active: i.type }">
+            <img class="zm" src="../assets/img/flop.png" />
             <img class="back" :src="i.img" />
           </div>
+        </div>
+      </div>
+      <div v-else class="actBox">
+        <div v-for="(i, index) in activeList" :key="index" class="card-box">
+          <img class="crad" :src="i.img" />
         </div>
       </div>
     </div>
@@ -22,6 +33,9 @@
 </template>
 
 <script>
+import { toolboxAnimalCard } from "@/api/index";
+import { mapGetters } from "vuex";
+import { setSessStore, getSessStore, removeSessStore } from "@/utils/mUtils";
 export default {
   data() {
     return {
@@ -29,24 +43,36 @@ export default {
       listNum: 12, // 卡片个数
       winner: null, // 当前抽中的奖品
       list: [], // 奖品列表
-      activeList:[]
+      activeList: [],
+      type: false,
     };
   },
+  computed: {
+    ...mapGetters({
+      lotterytype: "getLotterytype",
+    }),
+  },
   created() {
-    this.init();
+    if (getSessStore("flopData")) {
+      let flopData = getSessStore("flopData");
+      console.log(new Date().toDateString(),new Date(flopData.timestamp).toDateString())
+      if (
+        new Date(flopData.timestamp).toDateString() ===
+        new Date().toDateString()
+      ) {
+        this.activeList = JSON.parse(flopData.data);
+        this.type = true;
+      } else {
+        removeSessStore("flopData");
+        this.init();
+      }
+    } else {
+      this.init();
+    }
   },
   methods: {
-    // 翻牌抽奖
-    // 初始化奖品列表，根据listNum生成奖品列表
     init() {
-      // for (let i = 0; i < this.listNum; i++) {
-      //   const item = {
-      //     activeIndex: null, // 翻开的下标
-      //     winner: null, // 获得的奖品
-      //   };
-      //   this.list.push(item);
-      // }
-      this.list = [
+      let data = [
         {
           name: "虎",
           img: require("../assets/yjImgs/fpHu.png"),
@@ -108,13 +134,10 @@ export default {
           type: false,
         },
       ];
-    },
-    // 后端获取数据
-    getWinner() {
-      return new Promise((resolve) => {
-        this.winner = "谢谢参与";
-        resolve();
-      });
+      var randomNumber = function () {
+        return 0.5 - Math.random();
+      };
+      this.list = data.sort(randomNumber);
     },
     // 翻开卡片的方法
     open(item, index) {
@@ -124,21 +147,70 @@ export default {
           this.list.forEach((item1, index1) => {
             if (index === index1) {
               item1.type = true;
-              this.activeList.push(item1)
+              this.activeList.push(item1);
             }
           });
           this.openNumber--;
-          console.log(this.activeList);
+          if (this.openNumber == 0) {
+            let animals = this.activeList.map((el) => {
+              return el.name;
+            });
+            this.toolboxAnimalCard(animals.join(","));
+          }
         } else {
           alert("你已经翻开过了哦");
         }
       }
+    },
+    async toolboxAnimalCard(animals) {
+      let s = "" + new Date().getTime();
+      const res = await toolboxAnimalCard({
+        lottery_type: this.lotterytype,
+        push_id: s.substring(s.length - 5, s.length),
+        animals,
+      });
+      if (res.code === 1) {
+        let item = {
+          data: JSON.stringify(this.activeList),
+          timestamp: new Date().getTime(),
+        };
+        setSessStore("flopData", item);
+        setTimeout(() => {
+          this.type = true;
+        }, 1000);
+      }
+    },
+    onClickLeft() {
+      this.$router.go(-1);
     },
   },
 };
 </script>
 
 <style lang="less" scoped>
+.navBar {
+  background: linear-gradient(#1aae3d, #177900);
+
+  /deep/ .van-icon {
+    color: white;
+  }
+  /deep/ .van-ellipsis {
+    color: #fff;
+  }
+}
+.actBox {
+  width: 700px;
+  margin: 50px 25px;
+  display: flex;
+  justify-content: space-around;
+  .card-box {
+    width: 30%;
+    align-items: center;
+    .crad {
+      width: 100%;
+    }
+  }
+}
 .box {
   position: relative;
   margin: 50px auto;
@@ -160,7 +232,7 @@ img {
   right: 0;
   z-index: 9999;
   width: 100%;
-  height: 100%; 
+  height: 100%;
   /* 模糊大小就是靠的blur这个函数中的数值大小 */
   backdrop-filter: blur(10px);
 }
@@ -168,7 +240,7 @@ img {
 .overall {
   perspective: 1000px;
   .title {
-    margin-top: 80px;
+    margin: 80px 30px 0 30px;
     font-size: 30px;
   }
 }
@@ -177,16 +249,16 @@ img {
   justify-content: space-around;
   flex-wrap: wrap;
   width: 95vw;
-  height: 640px; 
+  height: 640px;
   .card-box {
     display: flex;
     justify-content: space-between;
     width: 23%;
     height: 200px;
-    position: relative; 
-    border-radius: 25px; 
+    position: relative;
+    border-radius: 25px;
   }
-  .crad { 
+  .crad {
     position: relative;
     /* 让容器里面的元素按照3d空间显示（规范写法）  */
     transform-style: preserve-3d;
@@ -201,99 +273,21 @@ img {
     top: 0px;
     left: 0px;
   }
- 
+
   .active .zm {
-    transform: perspective(800px) rotateY(180deg); 
+    transform: perspective(800px) rotateY(180deg);
   }
 
-  .crad .back {  
+  .crad .back {
     position: absolute;
     top: 0px;
-    left: 0px;  
+    left: 0px;
     transform: perspective(800px) rotateY(180deg);
     transition: all 1s ease;
     backface-visibility: hidden;
   }
-
   .active .back {
     transform: perspective(800px) rotateY(360deg);
   }
-  //   .card {
-  //     width: 100%;
-  //     height: 100%;
-  //     perspective: 500px;
-  //     transform-style: preserve-3d;
-  //     transition: 0.5s;
-  //     position: absolute;
-  //     left: 0;
-  //     top: 0;
-  //     &.active {
-  //       transform: rotateY(180deg);
-  //     }
-  //     /* 正面的样式 */
-  //     .z {
-  //       position: absolute;
-  //       width: 100%;
-  //       height: 100%;
-  //       z-index: 5;
-  //       background: white;
-  //       overflow: hidden;
-  //       display: flex;
-  //       justify-content: center;
-  //       align-items: center;
-  //       box-shadow: 0 0 0 2px yellow;
-  //       background-size: 100% 100%;
-  //       background-image: url(../assets/img/flop.png);
-  //       transform: perspective(180px) rotateY(0deg);
-  //             transition: all 2s ease;
-  //             backface-visibility: hidden;
-  //       &:hover {
-  //         transform: translateX(-90%);
-  //         // z-index: 0;
-  //         backface-visibility: hidden;
-  // }
-  //       img {
-  //         width: 100%;
-  //         height: 100%;
-  //         transition: 0.3s;
-  //         height: 100%;
-  //         position: absolute;
-  //         top: 0;
-  //         left: 0;
-  //       }
-  //       // h3 {
-  //       //   position: relative;
-  //       //   z-index: 3;
-  //       //   color: white;
-  //       //   font-weight: 200;
-  //       //   font-size: 1rem;
-  //       //   display: inline-block;
-  //       //   padding: 5px;
-  //       // }
-  //       //   opacity: .5;
-  //     }
-  //     /* 反面的样式 内容部分 */
-  //     .f {
-  //        top: 0;
-  //         left: 0;
-  //       box-sizing: border-box;
-  //       background: #fcfcfc;
-  //       position: absolute;
-  //       width: 100%;
-  //       height: 100%;
-  //       z-index: 2;
-  //       transform-style: preserve-3d;
-  //       transform: rotateY(180deg) translateZ(1px);
-  //       // display: flex;
-  //       // justify-content: center;
-  //       // align-items: center;
-  //       background-size: 100% 100%;
-  //       font-weight: bold;
-  //       // img {
-  //       //   width: 100%;
-  //       //   height: 100%;
-  //       // }
-  //     }
-  //   }
 }
 </style>

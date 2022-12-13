@@ -16,13 +16,13 @@
     <div class="top">
       <img width="100%" src="../assets/img/u12.png" />
     </div>
-    <van-tabs type="card" @click="onClick" color="#07c160">
+    <!-- <van-tabs type="card" @click="onClick" color="#07c160">
       <van-tab title="全部" />
       <van-tab title="澳彩" />
       <van-tab title="港彩" />
       <van-tab title="台彩" />
       <van-tab title="新彩" />
-    </van-tabs>
+    </van-tabs> -->
     <div class="tabWarp">
       <van-tabs
         class="selectTab"
@@ -31,72 +31,88 @@
         title-active-color="#07c160"
         title-inactive-color="#7c7c7c"
       >
-        <van-tab title="综合" />
-        <van-tab title="精华" />
-        <van-tab title="最多赞" />
-        <van-tab title="规则" />
+        <van-tab title="综合" name="all" />
+        <van-tab title="精华" name="ess" />
+        <van-tab title="最多赞" name="like" />
+        <van-tab title="最新" name="new" />
       </van-tabs>
     </div>
     <div class="plList">
-      <div class="list" @click="details(item.id)" v-for="(item, index) in listData" :key="index">
-        <div class="top">
-          <div class="left">
-            <img :src="item.img" />
+      <van-pull-refresh v-model="refreshing" @refresh="onRefresh">
+        <van-list
+          v-model="loading"
+          :finished="finished"
+          finished-text="没有更多了"
+          @load="onLoad"
+        >
+          <div
+            class="list"
+            @click="details(item.id)"
+            v-for="(item, index) in listData"
+            :key="index"
+          >
+            <div class="top">
+              <div class="left">
+                <img :src="item.img" />
+              </div>
+              <div class="right">
+                <div class="name">{{ item.name }}</div>
+                <div class="time">{{ item.time }}</div>
+              </div>
+            </div>
+            <div class="center">
+              <div class="title">
+                <div class="left">{{ item.qishu }}</div>
+                <div class="right">{{ item.title }}</div>
+              </div>
+              <div class="text">
+                {{ item.content }}
+              </div>
+            </div>
+            <div class="btm">
+              <div class="box">
+                <img src="../assets/img/pl.png" />
+                <div class="num">{{ item.pl }}</div>
+              </div>
+              <div class="box">
+                <img src="../assets/img/dz.png" />
+                <div class="num">{{ item.dz }}</div>
+              </div>
+              <div class="box">
+                <img src="../assets/img/liul.png" />
+                <div class="num">{{ item.liul }}</div>
+              </div>
+              <div v-if="item.type == '1'" class="ltType">
+                <img src="../assets/img/ac.png" />
+                <div class="ltTypeText" style="color: #07c160">澳彩</div>
+              </div>
+              <div v-if="item.type == '2'" class="ltType">
+                <img src="../assets/img/gc.png" />
+                <div class="ltTypeText" style="color: #ff0000">港彩</div>
+              </div>
+              <div v-if="item.type == '3'" class="ltType">
+                <img src="../assets/img/tc.png" />
+                <div class="ltTypeText" style="color: #0755c1">台彩</div>
+              </div>
+              <div v-if="item.type == '4'" class="ltType">
+                <img src="../assets/img/xc.png" />
+                <div class="ltTypeText" style="color: #b907c1">新彩</div>
+              </div>
+            </div>
           </div>
-          <div class="right">
-            <div class="name">{{ item.name }}</div>
-            <div class="time">{{ item.time }}</div>
-          </div>
-        </div>
-        <div class="center">
-          <div class="title">
-            <div class="left">{{ item.qishu }}</div>
-            <div class="right">{{ item.title }}</div>
-          </div>
-          <div class="text">
-            {{ item.content }}
-          </div>
-        </div>
-        <div class="btm">
-          <div class="box">
-            <img src="../assets/img/pl.png" />
-            <div class="num">{{ item.pl }}</div>
-          </div>
-          <div class="box">
-            <img src="../assets/img/dz.png" />
-            <div class="num">{{ item.dz }}</div>
-          </div>
-          <div class="box">
-            <img src="../assets/img/liul.png" />
-            <div class="num">{{ item.liul }}</div>
-          </div>
-          <div v-if="item.type == '1'" class="ltType">
-            <img src="../assets/img/ac.png" />
-            <div class="ltTypeText" style="color: #07c160">澳彩</div>
-          </div>
-          <div v-if="item.type == '2'" class="ltType">
-            <img src="../assets/img/gc.png" />
-            <div class="ltTypeText" style="color: #ff0000">港彩</div>
-          </div>
-          <div v-if="item.type == '3'" class="ltType">
-            <img src="../assets/img/tc.png" />
-            <div class="ltTypeText" style="color: #0755c1">台彩</div>
-          </div>
-          <div v-if="item.type == '4'" class="ltType">
-            <img src="../assets/img/xc.png" />
-            <div class="ltTypeText" style="color: #b907c1">新彩</div>
-          </div>
-        </div>
-      </div>
+        </van-list>
+      </van-pull-refresh>
     </div>
   </div>
 </template>
  
 <script>
-export default {
-  name: "imgs",
+export default { 
   data() {
     return {
+      loading: false,
+      finished: false,
+      refreshing: false,
       active: 0,
       listData: [
         {
@@ -110,7 +126,7 @@ export default {
           dz: "266",
           liul: "700",
           type: "2",
-          id:'001'
+          id: "001",
         },
         {
           name: "徐国栋",
@@ -123,7 +139,7 @@ export default {
           dz: "266",
           liul: "700",
           type: "3",
-          id:'002'
+          id: "002",
         },
         {
           name: "徐国栋",
@@ -136,7 +152,7 @@ export default {
           dz: "266",
           liul: "700",
           type: "4",
-          id:'003'
+          id: "003",
         },
         {
           name: "徐国栋",
@@ -149,14 +165,14 @@ export default {
           dz: "266",
           liul: "700",
           type: "1",
-          id:'004'
+          id: "004",
         },
       ],
     };
   },
   methods: {
-    details(id){
-      this.$router.push({path:'/gsFormDetails',query:{id:id}})
+    details(id) {
+      this.$router.push({ path: "/gsFormDetails", query: { id } });
     },
     onClick(name, title) {
       this.$toast(name);
@@ -166,7 +182,33 @@ export default {
       this.$router.go(-1);
     },
     onClickRight() {
-      this.$router.push('/message') 
+      this.$router.push("/message");
+    },
+    onLoad() {
+      setTimeout(() => {
+        if (this.refreshing) {
+          this.listData = [];
+          this.refreshing = false;
+        }
+
+        for (let i = 0; i < 10; i++) {
+          this.listData.push(this.listData.length + 1);
+        }
+        this.loading = false;
+
+        if (this.listData.length >= 40) {
+          this.finished = true;
+        }
+      }, 1000);
+    },
+    onRefresh() {
+      // 清空列表数据
+      this.finished = false;
+
+      // 重新加载数据
+      // 将 loading 设置为 true，表示处于加载状态
+      this.loading = true;
+      this.onLoad();
     },
   },
 };

@@ -13,6 +13,7 @@ import masterDetails from "@/views/masterDetails.vue";
 import openingDate from "@/views/openingDate.vue";
 import loverNum from "@/views/loverNum.vue";
 import mysterious from "@/views/mysterious.vue";
+import mysteriousList from "@/views/mysteriousList.vue";
 import shake from "@/views/shake.vue";
 import sxAttribute from "@/views/sxAttribute.vue";
 import yearData from "@/views/yearData.vue";
@@ -26,6 +27,7 @@ import gsFormDetails from "@/views/gsFormDetails.vue";
 import message from "@/views/message.vue";
 import lhtjMenu from "@/views/lhtj/index.vue";
 import grzx from "@/views/grzx.vue";
+import grzxEidt from "@/views/grzxEidt.vue";
 
 Vue.use(VueRouter);
 
@@ -94,6 +96,11 @@ const routes = [
     path: "/mysterious",
     name: "mysterious",
     component: mysterious,
+  }, 
+  {
+    path: "/mysteriousList",
+    name: "mysteriousList",
+    component: mysteriousList,
   },
   {
     path: "/shake",
@@ -159,6 +166,11 @@ const routes = [
     path: "/grzx",
     name: "grzx",
     component: grzx,
+  },
+  {
+    path: "/grzxEidt",
+    name: "grzxEidt",
+    component: grzxEidt,
   },
 ];
 

@@ -31,7 +31,7 @@
             class="btn2"
             size="large"
             type="info"
-            @click="open = false"
+            @click="routerLink('mysteriousList')"
             >前往历史</van-button
           >
         </div>
