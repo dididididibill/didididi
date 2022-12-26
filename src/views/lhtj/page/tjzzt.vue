@@ -3,7 +3,7 @@
     <van-sticky>
       <van-nav-bar
         class="navBar"
-        title="生肖正码统计"
+        :title="title"
         left-arrow
         @click-left="onClickLeft"
       >
@@ -24,95 +24,86 @@
         </template>
       </van-nav-bar>
     </van-sticky>
-    <van-tabs
-      v-model="active"
-      color="#07c160"
-      title-active-color="#07c160"
-      title-inactive-color="#7c7c7c"
-      @change="changeTab"
-    >
-      <van-tab title="热图" />
-      <van-tab title="冷图" />
-    </van-tabs>
     <div class="bg"></div>
     <div class="wrapper">
-      <div class="tjqs">当前统计期数{{ actQs }}</div>
-      <div id="sxPie" style="height: 500px"></div>
+      <div class="tjqs">当前统计期数: {{ actQs }}</div>
+      <div id="sxPie" style="height: 350px"></div>
     </div>
   </div>
 </template>
 
 <script>
 import * as echarts from "echarts";
-import { zxcountSxpiechart1 } from "@/api/index";
+import { zxcountBarchart2, zxcountBarchart1 } from "@/api/index";
 import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      active: 0,
+      title: "正码总分",
       showPopover: false,
-      actions: [],
+      actions: [
+        { text: "100", id: "100" },
+        { text: "50", id: "50" },
+        { text: "20", id: "20" },
+        { text: "10", id: "10" },
+      ],
       actQs: "",
-      coldData: {
+      eachartData: {
         series: {
           data: [],
         },
-      },
-      hotData: {
-        series: {
+        xAxis: {
           data: [],
         },
       },
       myChart: null,
+      url: "",
     };
   },
   computed: {
     ...mapGetters({
       lotterytype: "getLotterytype",
+      tabindex: "getTabindex",
     }),
   },
+  watch: {
+    tabindex(newVal, oldVal) {
+      if (newVal == 12) {
+        this.title = "正码总分";
+        this.url = zxcountBarchart1;
+      }
+      if (newVal == 9) {
+        this.title = "特码两面";
+        this.url = zxcountBarchart2;
+      }
+      this.actQs = this.actions[0].text;
+      this.getEachartData();
+    },
+  },
   created() {
-    this.actions = [
-      { text: "100", id: "100" },
-      { text: "50", id: "50" },
-      { text: "20", id: "20" },
-      { text: "10", id: "10" },
-    ];
+    if (this.tabindex == 12) {
+      this.title = "正码总分";
+      this.url = zxcountBarchart1;
+    }
+    if (this.tabindex == 9) {
+      this.title = "特码两面";
+      this.url = zxcountBarchart2;
+    }
     this.actQs = this.actions[0].text;
-    this.zxcountSxpiechart1();
+    this.getEachartData();
   },
   methods: {
-    async zxcountSxpiechart1() {
-      const res = await zxcountSxpiechart1({
+    async getEachartData() {
+      const res = await this.url({
         lottery_type: this.lotterytype,
         limit: this.actQs,
       });
       if (res.code === 1) {
-        this.coldData = res.data.cold;
-        this.hotData = res.data.hot;
-        if (this.active === 0) {
-          this.$nextTick(() => {
-            this.createdEchart(this.coldData);
-          });
-        } else {
-          this.$nextTick(() => {
-            this.createdEchart(this.hotData);
-          });
-        }
+        this.eachartData = res.data;
+        this.createdEchart(this.eachartData);
       }
     },
-    changeTab() {
-      if (this.active === 0) {
-        this.$nextTick(() => {
-          this.createdEchart(this.coldData);
-        });
-      } else {
-        this.$nextTick(() => {
-          this.createdEchart(this.hotData);
-        });
-      }
-    },
-    createdEchart(chartData) {
+    createdEchart(eachartData) {
       if (
         this.myChart != null &&
         this.myChart != "" &&
@@ -120,43 +111,26 @@ export default {
       ) {
         this.myChart.dispose(); //销毁
       }
-      var option = {
-        legend: {
-          bottom: 10,
-          left: "center",
-          formatter: function (name) {
-            var e = chartData.series.data.find(function (i) {
-              return i.name == name;
-            });
-            return name +':'+ e.value;
+      let option = {
+        tooltip: {
+          trigger: "axis",
+          axisPointer: {
+            type: "shadow",
           },
         },
-        label: {
-          alignTo: "edge",
-          formatter: "{name|{b}}{d}%\n{time|{c}次}",
-          minMargin: 5,
-          edgeDistance: 10,
-          lineHeight: 20,
-          rich: {
-            time: {
-              fontSize: 12,
-              color: "#999",
-            },
-          },
+        xAxis: {
+          type: "category",
+          data: eachartData.xAxis.data,
+        },
+        yAxis: {
+          type: "value",
         },
         series: [
           {
-            type: "pie",
-            radius: ["35%", "60%"],
-            center: ["50%", "30%"],
-            avoidLabelOverlap: false,
-            data: chartData.series.data,
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
+            data: eachartData.series.data,
+            type: "bar",
+            itemStyle: {
+              color: "#07c160",
             },
           },
         ],
@@ -171,7 +145,7 @@ export default {
     },
     onSelect(action) {
       this.actQs = action.text;
-      this.zxcountSxpiechart1();
+      this.getEachartData();
     },
     onClickLeft() {
       this.$router.go(-1);

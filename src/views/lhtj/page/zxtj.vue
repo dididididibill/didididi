@@ -27,21 +27,17 @@
     <div class="wrapper">
       <div class="bg"></div>
       <div class="listWrapper">
-        <div
-          v-for="(item, index) in dataList"
-          :key="index"
-          @click="openDlg(item)"
-          class="colorList"
-        >
-          <div class="top">{{ item.title }}</div>
+        <div v-for="(item, index) in numberList" :key="index" class="colorList">
+          <div class="top">{{ item.text }}</div>
           <div class="btm">
             <div
               class="numBox"
-              v-for="(item1, index1) in item.number"
+              v-for="(item1, index1) in item.content"
               :key="index1"
-              :class="getCss(item1)"
+              :class="getCss(item1.number)"
+              @click="openDlg(item1.number,item1.count,item.text)"
             >
-              {{ item1 }}
+              {{ item1.number }}
             </div>
           </div>
         </div>
@@ -49,19 +45,19 @@
       <div class="bg"></div>
       <div class="listWrapper">
         <div
-          v-for="(item, index) in sxlist"
-          :key="index"
-          @click="openDlg(item)"
+          v-for="(item, index) in sxList"
+          :key="index" 
           class="colorList sxList"
         >
           <div class="top">{{ item.text }}</div>
           <div class="btm">
             <div
+            @click="openDlg(item1.name,item1.count,item.text)"
               class="numBox"
-              v-for="(item1, index1) in item.number"
+              v-for="(item1, index1) in item.content"
               :key="index1"
             >
-              {{ item1 }}
+              {{ item1.name }}
             </div>
           </div>
         </div>
@@ -69,9 +65,8 @@
       <div class="bg"></div>
       <div class="listWrapper">
         <div
-          v-for="(item, index) in bslist"
+          v-for="(item, index) in bsList"
           :key="index"
-          @click="openDlg(item)"
           class="colorList sxList"
         >
           <div class="top">{{ item.text }}</div>
@@ -79,22 +74,44 @@
             <div
               class="numBox"
               :class="
-                item1 == '红波' ? 'red' : item1 == '绿波' ? 'green' : 'blue'
+                item1.value == '红波' ? 'red' : item1.value == '绿波' ? 'green' : 'blue'
               "
-              v-for="(item1, index1) in item.number"
+              v-for="(item1, index1) in item.content"
               :key="index1"
+              
+          @click="openDlg(item1.value,item1.count,item.text)"
             >
-              {{ item1 }}
+              {{ item1.value }}
             </div>
           </div>
         </div>
       </div>
       <div class="bg"></div>
+            <div class="listWrapper">
+        <div
+          v-for="(item, index) in wsList"
+          :key="index"
+          class="colorList sxList"
+        >
+          <div class="top">{{ item.text }}</div>
+          <div class="btm">
+            <div
+              class="wsBox"
+              v-for="(item1, index1) in item.content"
+              :key="index1"
+              
+          @click="openDlg(item1.name,item1.count,item.text)"
+            >
+              {{ item1.name + '尾' }}
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
     <van-dialog v-model="show" confirmButtonColor="#07c160">
-      <div style="padding-top: 20px; color: red">{{ showData.title }}</div>
+      <div style="padding-top: 20px; color: red">{{ showData.text }}</div>
       <div style="padding: 20px">
-        【{{ showData.number[0] }}】统计的次数：{{ showData.count[0] }}次
+        【{{ showData.number }}】统计的次数：{{ showData.count }}次
       </div>
     </van-dialog>
   </div>
@@ -112,123 +129,122 @@ export default {
       show: false,
       showData: {
         text: "",
-        number: [],
-        count: [],
+        number: '',
+        count: '',
       },
-      dataList: {
+      numberList: {
         specialHotNumberList: {
-          title: "特码出现期数最多的号码",
-          number: [],
-          count: [],
-        }, //	特码出现期数最多的号码
+          text:'特码出现期数最多的号码',
+          content:[]
+        },
+        specialColdNumberList: {
+          text:'特码当前遗漏期数最多的号码',
+          content:[]
+        },
         normalColdNumberList: {
-          title: "正码当前遗漏期数最多的号码",
-          number: [],
-          count: [],
-        }, //	正码当前遗漏期数最多的号码
-        normalColdAnimalList: {}, //	正码当前遗漏期数最多的生肖
-        normalColdColorList: {}, //	正码当前遗漏期数最多的波色
-        normalColdTailList: {}, //	无
-        normalHotAnimalList: {}, //	正码出现期数最多的生肖
-        normalHotColorList: {}, //	正码出现期数最多的波色
-        normalHotNumberList: {}, //	正码出现期数最多的号码
-        normalHotTailList: {}, //	无
-        specialColdAnimalList: {}, //	特码当前遗漏期数最多的生肖
-        specialColdColorList: {}, //	特码当前遗漏期数最多的波色
-        specialColdNumberList: {}, //	特码当前遗漏期数最多的号码
-        specialColdTailList: {}, //	特码当前遗漏期数最多的尾数
-        specialHotAnimalList: {}, //	特码出现期数最多的生肖
-        specialHotColorList: {}, //	特码出现期数最多的波色
-        specialHotTailList: {}, //	特码出现期数最多的尾数
+          text:'正码出现期数最多的号码',
+          content:[]
+        },
+        normalHotNumberList: {
+          text:'正码当前遗漏期数最多的号码',
+          content:[]
+        },
       },
-      numlist: [
-        { text: "特码出现期数最多的号码", number: ["03", "15", "27", "39"] },
-        {
-          text: "特码当前遗漏期数最多的号码",
-          number: ["02", "14", "26", "38"],
+      sxList: {
+        specialHotAnimalList: {
+          text:'特码出现期数最多的生肖',
+          content:[]
         },
-        {
-          text: "特码出现期数最多的号码",
-          number: ["01", "13", "25", "37", "49", "01", "13", "25", "37", "49"],
+        specialColdAnimalList: {
+          text:'特码当前遗漏期数最多的生肖',
+          content:[]
         },
-        {
-          text: "特码出现期数最多的号码",
-          number: ["01", "13", "25", "37", "49", "01", "13", "25", "37", "49"],
+        normalHotAnimalList: {
+          text:'正码出现期数最多的生肖',
+          content:[]
         },
-      ],
-      sxlist: [
-        {
-          text: "特码出现期数最多的生肖",
-          number: ["马", "猴", "鸡", "龙", "兔", "羊"],
+        normalColdAnimalList: {
+          text:'正码当前遗漏期数最多的生肖',
+          content:[]
         },
-        {
-          text: "特码当前遗漏期数最多的生肖",
-          number: ["马", "猴", "鸡", "龙", "兔", "羊"],
+      },
+      bsList: {
+        specialHotColorList: {
+          text:'特码出现期数最多的波色',
+          content:[]
         },
-        {
-          text: "正码出现期数最多的生肖",
-          number: ["马", "猴", "鸡", "龙", "兔", "羊"],
+        specialColdColorList: {
+          text:'特码当前遗漏期数最多的波色',
+          content:[]
         },
-        {
-          text: "正码当前遗漏期数最多的生肖",
-          number: ["马", "猴", "鸡", "龙", "兔", "羊"],
+        normalHotColorList: {
+          text:'正码出现期数最多的波色',
+          content:[]
         },
-      ],
-      bslist: [
-        {
-          text: "特码出现期数最多的波色",
-          number: ["红波", "绿波", "蓝波"],
+        normalColdColorList: {
+          text:'正码当前遗漏期数最多的波色',
+          content:[]
         },
-        {
-          text: "特码当前遗漏期数最多的波色",
-          number: ["红波", "绿波", "蓝波"],
+      },
+      wsList: {
+        specialHotTailList: {
+          text:'特码出现期数最多的尾数',
+          content:[]
         },
-        {
-          text: "正码出现期数最多的波色",
-          number: ["红波", "绿波", "蓝波"],
-        },
-        {
-          text: "正码当前遗漏期数最多的波色",
-          number: ["红波", "绿波", "蓝波"],
-        },
-      ],
+        specialColdTailList: {
+          text:'特码当前遗漏期数最多的尾数',
+          content:[]
+        }
+      },
     };
   },
   created() {
     this.actions = [
-      { text: "99", id: "99" },
       { text: "100", id: "100" },
-      { text: "101", id: "101" },
+      { text: "50", id: "50" },
+      { text: "20", id: "20" },
+      { text: "10", id: "10" },
     ];
     this.actQs = this.actions[0].text;
     this.zxcountLiuhe();
   },
   methods: {
     async zxcountLiuhe() {
-      const res = await zxcountLiuhe({ lottery_type: "1", limit: "100" });
-     this.dataList.specialHotNumberList.number =
-        res.data.specialHotNumberList.map((el) => {
-          return el.number;
-        });
-      this.dataList.specialHotNumberList.count =
-        res.data.specialHotNumberList.map((el) => {
-          return el.count;
-        });
+      const res = await zxcountLiuhe({ lottery_type: "1", limit: this.actQs });
+      if (res.code === 1) {
+        // 号码
+        this.numberList.specialHotNumberList.content = res.data.specialHotNumberList
+        this.numberList.specialColdNumberList.content = res.data.specialColdNumberList
+        this.numberList.normalColdNumberList.content = res.data.normalColdNumberList
+        this.numberList.normalHotNumberList.content = res.data.normalHotNumberList
+        //生肖
+        this.sxList.specialHotAnimalList.content = res.data.specialHotAnimalList
+        this.sxList.specialColdAnimalList.content = res.data.specialColdAnimalList
+        this.sxList.normalHotAnimalList.content = res.data.normalHotAnimalList
+        this.sxList.normalColdAnimalList.content = res.data.normalColdAnimalList
+        //波色
+        this.bsList.specialHotColorList.content = res.data.specialHotColorList
+        this.bsList.specialColdColorList.content = res.data.specialColdColorList
+        this.bsList.normalHotColorList.content = res.data.normalHotColorList
+        this.bsList.normalColdColorList.content = res.data.normalColdColorList
+        //尾数
+        this.wsList.specialHotTailList.content = res.data.specialHotTailList
+        this.wsList.specialColdTailList.content = res.data.specialColdTailList
+      }
     },
     onSelect(action) {
-      this.actQs = action.text;
-      console.log(action.id);
+      this.actQs = action.text; 
+    this.zxcountLiuhe();
     },
-    openDlg(item) {
-      this.showData = item;
+    openDlg(number,count,text) {
+      this.showData.text = text;
+      this.showData.number = number;
+      this.showData.count = count;
       this.show = true;
     },
     onClickLeft() {
       this.$router.go(-1);
-    },
-    onClickRight() {
-      console.log(123);
-    },
+    }, 
   },
   computed: {
     getCss() {
@@ -325,6 +341,14 @@ export default {
           line-height: 50px;
           width: 30px;
           height: 50px;
+          font-weight: 700;
+        }
+        .wsBox {
+          text-align: center;
+          line-height: 50px;
+          width: 50px;
+          height: 50px;
+          font-weight: 700;
         }
         .green {
           color: #07c160;

@@ -28,6 +28,7 @@ import message from "@/views/message.vue";
 import lhtjMenu from "@/views/lhtj/index.vue";
 import grzx from "@/views/grzx.vue";
 import grzxEidt from "@/views/grzxEidt.vue";
+import zhibo from "@/views/zhibo.vue";
 
 Vue.use(VueRouter);
 
@@ -171,6 +172,11 @@ const routes = [
     path: "/grzxEidt",
     name: "grzxEidt",
     component: grzxEidt,
+  },
+  {
+    path: "/zhibo",
+    name: "zhibo",
+    component: zhibo,
   },
 ];
 

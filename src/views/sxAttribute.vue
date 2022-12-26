@@ -54,7 +54,10 @@
         v-for="(item, index) in colorList"
         :key="index + 'item'"
       >
-        <div class="wxTitle" :style="{ color: getStatusColor(item.zodiac_number[1]) }">
+        <div
+          class="wxTitle"
+          :style="{ color: getStatusColor(item.zodiac_number[1]) }"
+        >
           {{ item.title }}
         </div>
         <div class="wxNub">
@@ -98,7 +101,7 @@
       >
         <div class="list" v-for="(item1, index1) in item" :key="index1">
           <div class="title">{{ item1.title }} :</div>
-          <div class="text">{{ item1.text.join(" ") }}</div>
+          <div class="text">{{ item1.zodiac_number.join(" ") }}</div>
         </div>
       </div>
       <div
@@ -128,67 +131,12 @@ export default {
   data() {
     return {
       wxList: {},
-      hsList: {
-        x1: {
-          name: "合数单",
-          nub: [
-            "01",
-            "03",
-            "05",
-            "07",
-            "09",
-            "10",
-            "12",
-            "14",
-            "16",
-            "18",
-            "21",
-            "23",
-            "25",
-            "27",
-            "29",
-            "30",
-            "32",
-            "34",
-            "36",
-            "38",
-            "41",
-            "43",
-            "45",
-            "47",
-            "49",
-          ],
+      hsList: [
+        {
+          title: "",
+          zodiacAttr: [],
         },
-        x2: {
-          name: "合数双",
-          nub: [
-            "02",
-            "04",
-            "06",
-            "08",
-            "11",
-            "13",
-            "15",
-            "17",
-            "19",
-            "20",
-            "22",
-            "24",
-            "26",
-            "28",
-            "31",
-            "33",
-            "35",
-            "37",
-            "39",
-            "40",
-            "42",
-            "44",
-            "46",
-            "48",
-          ],
-        },
-      },
+      ],
       colorList: {
         red: {
           name: "红波",
@@ -280,58 +228,12 @@ export default {
         },
       },
       sxListData: [],
-      sxTypeData: {
-        a1: {
-          aa1: {
-            title: "家禽",
-            text: ["牛", "马", "羊", "鸡", "狗", "猪"],
-          },
-          aa2: {
-            title: "野兽",
-            text: ["鼠", "虎", "兔", "龙", "蛇", "猴"],
-          },
+      sxTypeData: [
+        {
+          title: "",
+          zodiacAttr: [],
         },
-        b1: {
-          bb1: {
-            title: "吉美",
-            text: ["兔", "龙", "蛇", "马", "羊", "鸡"],
-          },
-          bb2: {
-            title: "凶丑",
-            text: ["鼠", "牛", "虎", "猴", "狗", "猪"],
-          },
-        },
-        c1: {
-          cc1: {
-            title: "独肖",
-            text: ["鼠", "牛", "虎", "兔", "马", "羊"],
-          },
-          cc2: {
-            title: "合肖",
-            text: ["龙", "蛇", "猴", "鸡", "狗", "猪"],
-          },
-        },
-        c1: {
-          cc1: {
-            title: "前肖",
-            text: ["鼠", "牛", "虎", "兔", "龙", "蛇"],
-          },
-          cc2: {
-            title: "后肖",
-            text: ["马", "羊", "猴", "鸡", "狗", "猪"],
-          },
-        },
-        d1: {
-          dd1: {
-            title: "左肖",
-            text: ["鼠", "牛", "龙", "蛇", "猴", "鸡"],
-          },
-          dd2: {
-            title: "右肖",
-            text: ["虎", "兔", "马", "羊", "狗", "猪"],
-          },
-        },
-      },
+      ],
       sxTypeData1: {
         type1: {
           typeList1: {
@@ -2688,8 +2590,9 @@ export default {
       if (res.code === 1) {
         this.sxListData = res.data.sxhm.list;
         this.wxList = res.data.wx.list;
-        this.colorList = res.data.bs.list
-        this.hsList = res.data.hsds.list 
+        this.colorList = res.data.bs.list;
+        this.hsList = res.data.hsds.list;
+        this.sxTypeData = res.data.sxsx.list;
       } else {
         this.$toast(res.msg);
       }

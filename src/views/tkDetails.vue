@@ -202,11 +202,9 @@ export default {
     yearUnit(id, index) {
       if (id === "00000") {
       } else {
-        if (index == this.chooseIndex) {
-          console.log("点击相同频道", id);
+        if (index == this.chooseIndex) { 
         } else {
-          this.chooseIndex = index;
-          console.log("切换频道", id);
+          this.chooseIndex = index; 
           this.activeNames = [];
         }
       }
@@ -222,9 +220,7 @@ export default {
       if (arr.length % 4 == 0) {
         this.yearBtn = arr;
       } else {
-        let i = arr.length % 4;
-
-        console.log(i);
+        let i = arr.length % 4; 
         for (let x = 0; x < i; x++) {
           arr.push({
             year: "",

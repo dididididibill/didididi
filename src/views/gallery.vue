@@ -68,10 +68,7 @@ export default {
       if (res.code === 1) {
         this.list = res.data.list;
       }
-    },
-    changeType() {
-      console.log(this.value1);
-    },
+    }, 
     onSearch() {
       this.$toast(this.value);
     },

@@ -3,7 +3,7 @@
     <van-sticky>
       <van-nav-bar
         class="navBar"
-        title="六合统计"
+        :title="title"
         left-arrow
         @click-left="onClickLeft"
       >
@@ -25,7 +25,7 @@
       </van-nav-bar>
     </van-sticky>
     <div class="wrapper">
-      <div class="tjqs">当前统计期数{{ actQs }}</div>
+      <div class="tjqs">当前统计期数: {{ actQs }}</div>
       <div id="hot" style="height: 350px"></div>
       <div id="cool" style="height: 350px"></div>
     </div>
@@ -34,64 +34,103 @@
 
 <script>
 import * as echarts from "echarts";
-import { zxcountSpecialcode } from "@/api/index";
+import { zxcountSpecialcode, zxcountPositivecode } from "@/api/index";
+import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      title: "正码历史冷热图",
       showPopover: false,
-      actions: [],
+      actions: [
+      { text: "100", id: "100" },
+      { text: "50", id: "50" },
+      { text: "20", id: "20" },
+      { text: "10", id: "10" },
+    ],
       actQs: "",
       chartData: {
-        hot:{ 
-          title:'',
-          xAxis:{
-            data:[]
+        hot: {
+          title: "",
+          xAxis: {
+            data: [],
           },
-          series:{
-            data:[]
-          }
+          series: {
+            data: [],
+          },
         },
-        cold:{ 
-          title:'',
-          xAxis:{
-            data:[]
+        cold: {
+          title: "",
+          xAxis: {
+            data: [],
           },
-          series:{
-            data:[]
-          }
-        }, 
+          series: {
+            data: [],
+          },
+        },
       },
+      myChart: null,
+      myChart1: null,
+      url: "",
     };
   },
-  created() {
-    this.actions = [
-      { text: "99", id: "99" },
-      { text: "100", id: "100" },
-      { text: "101", id: "101" },
-    ];
+  created() { 
     this.actQs = this.actions[0].text;
-
-    // this.$nextTick(() => {
-    //   this.createdEchart();
-    // });
-    this.zxcountSpecialcode();
+    if (this.tabindex == 2) {
+      this.title = "特码历史冷热图";
+      this.url = zxcountSpecialcode;
+    }
+    if (this.tabindex == 3) {
+      this.title = "正码历史冷热图";
+      this.url = zxcountPositivecode;
+    }
+    this.getEachartData();
+  },
+  computed: {
+    ...mapGetters({
+      lotterytype: "getLotterytype",
+      tabindex: "getTabindex",
+    }),
+  },
+  watch: {
+    tabindex(newVal, oldVal) {
+      if (newVal == 2) {
+        this.title = "特码历史冷热图";
+        this.url = zxcountSpecialcode;
+      }
+      if (newVal == 3) {
+        this.title = "正码历史冷热图";
+        this.url = zxcountPositivecode;
+      } 
+      this.actQs = this.actions[0].text;
+      this.getEachartData();
+    },
   },
   methods: {
-    async zxcountSpecialcode() {
-      const res = await zxcountSpecialcode({ lottery_type: "1", limit: "100" });
+    async getEachartData() {
+      const res = await this.url({
+        lottery_type: this.lotterytype,
+        limit: this.actQs,
+      });
       this.chartData = res.data;
       this.$nextTick(() => {
-      this.createdEchart();
-    });
+        this.createdEchart();
+      });
     },
     createdEchart() {
-      let chartDom = document.getElementById("hot");
-      let chartDom1 = document.getElementById("cool");
-      let myChart = echarts.init(chartDom);
-      let myChart1 = echarts.init(chartDom1);
+      if (
+        this.myChart != null &&
+        this.myChart != "" &&
+        this.myChart != undefined &&
+        this.myChart1 != null &&
+        this.myChart1 != "" &&
+        this.myChart1 != undefined
+      ) {
+        this.myChart.dispose();
+        this.myChart1.dispose();
+      }
       let option = {
         title: {
-          text: `${this.chartData.hot.title}(所选期数范围内国内出现的次数)`,
+          text: `${this.title}(所选期数范围内国内出现的次数)`,
           left: "left",
           textStyle: { fontSize: 14, color: "#7c7c7c", fontWeight: 500 },
         },
@@ -126,7 +165,7 @@ export default {
       };
       let option1 = {
         title: {
-          text: `${this.chartData.cold.title}(所选期数范围内国内出现的次数)`,
+          text: `${this.title}(所选期数范围内国内出现的次数)`,
           left: "left",
           textStyle: { fontSize: 14, color: "#7c7c7c", fontWeight: 500 },
         },
@@ -159,13 +198,18 @@ export default {
           },
         },
       };
-
-      option && myChart.setOption(option);
-      option && myChart1.setOption(option1);
+      this.myChart = echarts.init(document.getElementById("hot"));
+      this.myChart1 = echarts.init(document.getElementById("cool"));
+      this.myChart.setOption(option);
+      this.myChart1.setOption(option1);
+      window.addEventListener("resize", () => {
+        this.myChart.resize();
+        this.myChart1.resize();
+      });
     },
     onSelect(action) {
       this.actQs = action.text;
-      console.log(action.id);
+      this.getEachartData();
     },
     onClickLeft() {
       this.$router.go(-1);

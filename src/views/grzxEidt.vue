@@ -186,7 +186,6 @@ export default {
         this.form.avatar = res.data.img_url;
         this.avatar[0].url = res.data.img_url;
       }
-      console.log(this.avatar);
     },
     async userInfo() {
       const res = await userInfo();
@@ -194,10 +193,7 @@ export default {
     },
     routerLink() {
       this.$router.go(-1);
-    },
-    onClickLeft() {
-      console.log("1");
-    },
+    }, 
     popup() {
       this.show = true;
     },

@@ -41,6 +41,7 @@ import { voteDetails } from "@/api/index";
 export default {
   data() {
     return {
+      myChart:null,
       chooseIndex: 0,
       echartsData: {
         cate: [],
@@ -77,7 +78,7 @@ export default {
         },
         {
           name: "单双",
-          type: "dx",
+          type: "ds",
         },
         {
           name: "合数",
@@ -122,8 +123,7 @@ export default {
       });
     },
     clickunit(id, index) {
-      if (index == this.chooseIndex) {
-        console.log("点击相同频道", id);
+      if (index == this.chooseIndex) { 
       } else {
         this.chooseIndex = index;
         this.voteDetails(id);
@@ -135,11 +135,13 @@ export default {
     onClickLeft() {
       this.$router.go(-1);
     },
-    barGraph() {
-      if (myChart) {
-        // myChart.dispose(); // 清空
-        // 或者
-        myChart.removeAttribute("_echarts_instance_"); // 移除容器上的 _echarts_instance
+    barGraph() { 
+      if (
+        this.myChart != null &&
+        this.myChart != "" &&
+        this.myChart != undefined
+      ) {
+        this.myChart.dispose(); //销毁
       }
       var cate = this.echartsData.cate;
       var barData = this.echartsData.barData;
@@ -188,8 +190,7 @@ export default {
             fontSize: 5,
           },
           axisLabel: {
-            color: "rgba(255, 255, 255, 1)",
-            // 此处配置背景色
+            color: "rgba(255, 255, 255, 1)", 
             backgroundColor: "red",
             fontSize: 14,
             width: 20,
@@ -200,8 +201,7 @@ export default {
           },
         },
         series: [
-          {
-            //柱状图自动排序，排序自动让Y轴名字跟着数据动
+          { 
             realtimeSort: true,
             name: "票量",
             type: "bar",
@@ -239,22 +239,21 @@ export default {
         animationEasing: "linear",
         animationEasingUpdate: "linear",
       };
-      var myChart = this.$echarts.init(document.getElementById("echartRight"));
-      // myChart.removeAttribute("_echarts_instance_");
-      myChart.setOption(option);
-      var autoHeight = option.yAxis.data.length * 30 + 100;
-      myChart.getDom().style.height = autoHeight + "px";
-      myChart.getDom().childNodes[0].style.height = autoHeight + "px";
-      myChart
+      this.myChart = this.$echarts.init(document.getElementById("echartRight"), null, {renderer:'svg'}); 
+      this.myChart.setOption(option);
+      let autoHeight = option.yAxis.data.length * 30 + 100;
+      this.myChart.getDom().style.height = autoHeight + "px";
+      this.myChart.getDom().childNodes[0].style.height = autoHeight + "px";
+      this.myChart
         .getDom()
         .childNodes[0].childNodes[0].setAttribute("height", autoHeight);
-      myChart.getDom().childNodes[0].childNodes[0].style.height =
+      this.myChart.getDom().childNodes[0].childNodes[0].style.height =
         autoHeight + "px";
-      myChart.on("click", function (params) {
+      this.myChart.on("click", function (params) {
         console.log(params, "click");
       });
       this.$nextTick(() => {
-        myChart.resize();
+        this.myChart.resize();
       });
     },
   },

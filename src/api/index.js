@@ -81,9 +81,25 @@ export function zxcountSpecialcode(params, url) {
   // 资讯统计-特码历史
   return fetchGet(url || baseUrl, "zxcount/specialcode", params);
 }
+export function zxcountPositivecode(params, url) {
+  // 资讯统计-正码历史
+  return fetchGet(url || baseUrl, "zxcount/positivecode", params);
+}
 export function zxcountWstable(params, url) {
   // 资讯统计-特码历史
   return fetchGet(url || baseUrl, "zxcount/wstable", params);
+}
+export function zxcountSxpiechart1(params, url) {
+  // 资讯统计-生肖正码
+  return fetchGet(url || baseUrl, "zxcount/sxpiechart1", params);
+}
+export function zxcountBarchart2(params, url) {
+  // 资讯统计-特码两面
+  return fetchGet(url || baseUrl, "zxcount/barchart2", params);
+}
+export function zxcountBarchart1(params, url) {
+  // 资讯统计-正码总分
+  return fetchGet(url || baseUrl, "zxcount/barchart1", params);
 }
 export function voteDetails(params, url) {
   // 投票详情

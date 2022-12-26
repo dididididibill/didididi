@@ -204,8 +204,7 @@ export default {
     },
     // 展示 日历数据
     getDatas() {
-      if (this.dealDataFinal && this.dealDataFinal.length > 0) {
-        // console.log(this.dealDataFinal);
+      if (this.dealDataFinal && this.dealDataFinal.length > 0) { 
         this.list = [];
         const datas = this.dealDataFinal;
         const dataMap = {};
@@ -252,8 +251,7 @@ export default {
               checkedColor: undefined, // 选中颜色
             });
           }
-        }
-        // console.log(this.list);
+        } 
       } else {
         this.clearCalendar();
       }
@@ -489,8 +487,7 @@ export default {
     },
     // 设置选中之后的逻辑
     queryDeal(item) {
-      if (this.isPointer) {
-        console.log(item);
+      if (this.isPointer) { 
         // 设置选中之后的效果
         if (this.list && this.list.length) {
           const tempList = [...this.list];

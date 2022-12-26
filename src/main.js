@@ -8,7 +8,12 @@ import 'amfe-flexible'
 import './assets/reset.css'
 import * as echarts from 'echarts';//引入echarts
 import axios from 'axios'
-import store from './store';
+import store from './store'; 
+ 
+import Video from 'video.js';
+import 'video.js/dist/video-js.css';
+
+Vue.prototype.$video = Video;
 
 Vue.prototype.axios = axios
 Vue.prototype.$echarts = echarts //引入组件

@@ -11,7 +11,7 @@
           <van-icon name="user-circle-o" size="18" />
           <div class="text">登录</div>
         </div>
-        <div class="left grzx" v-else  @click="routerLink('/grzx')">
+        <div class="left grzx" v-else @click="routerLink('/grzx')">
           <van-icon name="user-circle-o" size="18" />
           <div class="text">个人中心</div>
         </div>
@@ -173,7 +173,7 @@ import { getSessStore } from "@/utils/mUtils";
 export default {
   data() {
     return {
-      userType:false,
+      userType: false,
       show: false,
       chooseIndex: 0,
       kjTime: "",
@@ -244,7 +244,8 @@ export default {
         {
           icon: require("../assets/img/zbkj.png"),
           name: "直播开奖",
-          link: "/tkDetails",
+          // link: "/tkDetails",
+          link: "/zhibo",
         },
         {
           icon: require("../assets/img/kjrq.png"),
@@ -342,12 +343,17 @@ export default {
       };
     },
     ...mapGetters({
-      lotterytype: "getLotterytype", 
+      lotterytype: "getLotterytype",
     }),
   },
+  watch: {
+    lotterytype(newVal, oldVal) { 
+      console.log(this.lotterytype, 5566);
+    },
+  },
   created() {
-    if(getSessStore('authInfo')){
-      this.userType = true
+    if (getSessStore("authInfo")) {
+      this.userType = true;
     }
     this.indexBanner();
     this.indexDataList();
@@ -355,7 +361,6 @@ export default {
   methods: {
     async indexBanner() {
       const res = await indexBanner();
-      console.log(res);
       this.kjTime = res.data.open_url;
     },
     async indexDataList() {
@@ -372,23 +377,16 @@ export default {
     routerLink(link) {
       this.$router.push(link);
       this.show = false;
-    },
-    onClickLeft() {
-      // this.$router.go(-1);
-      console.log("1");
-    },
+    }, 
     popup() {
       this.show = true;
     },
 
     clickunit(id, index) {
       if (index == this.chooseIndex) {
-        console.log("点击相同频道", id);
       } else {
         this.chooseIndex = index;
-        console.log("切换频道", id);
         this.$store.dispatch("setLotterytype", id);
-        console.log(this.lotterytype, "vuex");
       }
     },
   },
@@ -455,13 +453,13 @@ export default {
       margin: auto 20px;
       display: flex;
       justify-content: space-around;
-      .left { 
+      .left {
         // margin-right: 30px;
         .text {
           margin-top: 5px;
         }
       }
-      .grzx{ 
+      .grzx {
         margin-right: 5px;
       }
       .right {
@@ -677,7 +675,7 @@ export default {
             color: #a10000;
             margin-right: 7px;
           }
-        }
+        } 
       }
     }
   }

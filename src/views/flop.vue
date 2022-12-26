@@ -55,7 +55,6 @@ export default {
   created() {
     if (getSessStore("flopData")) {
       let flopData = getSessStore("flopData");
-      console.log(new Date().toDateString(),new Date(flopData.timestamp).toDateString())
       if (
         new Date(flopData.timestamp).toDateString() ===
         new Date().toDateString()

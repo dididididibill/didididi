@@ -87,8 +87,7 @@ export default {
       }
     },
     onSelect(action) {
-      this.year = action;
-      console.log(action);
+      this.year = action; 
     },
     onClickLeft() {
       this.$router.go(-1);

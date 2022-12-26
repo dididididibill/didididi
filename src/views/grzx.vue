@@ -78,7 +78,6 @@ export default {
       const res = await login(form);
       if (res.code == 1) {
         this.$toast(res.msg);
-        console.log(res.data);
         setSessStore("authInfo", JSON.stringify(res.data));
         setTimeout(() => {
           this.$router.replace({ path: "/" });
@@ -111,10 +110,7 @@ export default {
     },
     routerLink() {
       this.$router.go(-1);
-    },
-    onClickLeft() {
-      console.log("1");
-    },
+    }, 
     popup() {
       this.show = true;
     },

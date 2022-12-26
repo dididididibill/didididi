@@ -247,7 +247,6 @@ export default {
         }
       };
       arrange([], arr);
-      console.log(res);
       return res;
     },
     onConfirm(value) {
